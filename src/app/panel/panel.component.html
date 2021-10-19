@@ -1,0 +1,69 @@
+<div class="container">
+    <div class="panel">
+        <h1 class="section-title">Коллекция машин: </h1>
+        <div class="panel-buttons">
+            <button mat-raised-button color="red" (click)="openCreateVehicleDialog()">Создать</button>
+            <button mat-raised-button color="red" (click)="onAddRandomCarClick()">Добавить случайный</button>
+        </div>
+        <div class="panel-table-container mat-elevation-z8">
+            <table mat-table [dataSource]="paginatorVehicles" [trackBy]="vehiclesTrackBy" class="panel-table">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Название </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="coordinates">
+                    <th mat-header-cell *matHeaderCellDef> Координаты </th>
+                    <td mat-cell *matCellDef="let element"> ({{element.coordinates.xCoord}}, {{element.coordinates.yCoord}}) </td>
+                </ng-container>
+
+                <ng-container matColumnDef="creationDate">
+                    <th mat-header-cell *matHeaderCellDef> Дата создания </th>
+                    <td mat-cell *matCellDef="let element"> {{element.creationDate | date}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="enginePower">
+                    <th mat-header-cell *matHeaderCellDef> Мощность двигателя </th>
+                    <td mat-cell *matCellDef="let element"> {{element.enginePower}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="numberOfWheels">
+                    <th mat-header-cell *matHeaderCellDef> Кол-во колес </th>
+                    <td mat-cell *matCellDef="let element"> {{element.numberOfWheels}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vehicleType">
+                    <th mat-header-cell *matHeaderCellDef> Тип </th>
+                    <td mat-cell *matCellDef="let element"> {{element.vehicleType}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fuelType">
+                    <th mat-header-cell *matHeaderCellDef> Топливо </th>
+                    <td mat-cell *matCellDef="let element"> {{element.fuelType}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="deleteColumn">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button (click)="onDeleteButtonClick(element)">
+                            <mat-icon class="delete-icon">delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator class="paginator" [length]="vehicles ? vehicles.length : 0" [pageSize]="paginatorPageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="getPagedItems($event.pageIndex, $event.pageSize)">
+            </mat-paginator>
+        </div>
+    </div>
+    <div class="filters">
+        <h1 class="section-title">Фильтры: </h1>
+    </div>
+</div>
