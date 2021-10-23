@@ -38,7 +38,7 @@ export class PanelService {
     return this.http.get(url, { responseType: 'text' });
   }
 
-  postVehicle(vehicle: Vehicle): Observable<any> {
+  buildBodyXml(vehicle: Vehicle): string {
     let body = JSON.parse(JSON.stringify(vehicle));
     delete body.vehicleType;
     body.type = VehicleType[VehicleType[vehicle.vehicleType]];
@@ -47,7 +47,15 @@ export class PanelService {
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><vehicle>' +
       json2xml(JSON.stringify(body), { compact: true, ignoreComment: true, spaces: 4 }) +
       '</vehicle>';
-    return this.http.post(this.vehiclesUrl, xmlStr, this.httpOptions);
+    return xmlStr;
+  }
+
+  postVehicle(vehicle: Vehicle): Observable<any> {
+    return this.http.post(this.vehiclesUrl, this.buildBodyXml(vehicle), this.httpOptions);
+  }
+
+  updateVehicle(vehicle: Vehicle): Observable<any> {
+    return this.http.patch(this.vehiclesUrl, this.buildBodyXml(vehicle), this.httpOptions);
   }
 
   deleteVehicle(vehicleId: number): Observable<any> {

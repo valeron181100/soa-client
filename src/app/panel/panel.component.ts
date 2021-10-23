@@ -159,18 +159,25 @@ export class PanelComponent implements OnInit {
     }
   }
 
-  openCreateVehicleDialog(): void {
+  openCreateVehicleDialog(vehicle?: Vehicle): void {
     const dialogRef = this.dialog.open(VehicleCreateComponent, {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((result: Vehicle) => {
+    dialogRef.componentInstance.vehicle = vehicle;
+
+    dialogRef.afterClosed().subscribe((result: any) => {
       console.log(result);
       
       if (result)
-        this.panelService.postVehicle(result).subscribe(
-          () => this.loadData()
-        );
+        if (result.action === 'create')
+          this.panelService.postVehicle(result.vehicle).subscribe(
+            () => this.loadData()
+          );
+        else
+          this.panelService.updateVehicle(result.vehicle).subscribe(
+            () => this.loadData()
+          ); 
     });
   }
 

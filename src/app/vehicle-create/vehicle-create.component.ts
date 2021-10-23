@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CoordinatesPickerComponent } from '../coordinates-picker/coordinates-picker.component';
@@ -15,6 +15,9 @@ export class VehicleCreateComponent implements OnInit {
 
   vehicleForm: FormGroup;
 
+  @Input()
+  vehicle: Vehicle;
+
   constructor(private dialog: MatDialog,
               private randomService: RandomService,
               private dialogRef: MatDialogRef<VehicleCreateComponent>) { }
@@ -28,20 +31,31 @@ export class VehicleCreateComponent implements OnInit {
       vehicleType: new FormControl('', [vehicleTypeValidator()]),
       fuelType: new FormControl('', [fuelTypeValidator()])
     });
+    if (this.vehicle) {
+      this.vehicleForm.get('name').setValue(this.vehicle.name);
+      this.vehicleForm.get('coordinates').setValue(Coordinates.toString(this.vehicle.coordinates));
+      this.vehicleForm.get('enginePower').setValue(this.vehicle.enginePower);
+      this.vehicleForm.get('numberOfWheels').setValue(this.vehicle.numberOfWheels);
+      this.vehicleForm.get('vehicleType').setValue(this.vehicle.vehicleType);
+      this.vehicleForm.get('fuelType').setValue(this.vehicle.fuelType);
+    }
   }
   onReadyButtonClick(): void {
     console.log(this.vehicleForm.valid);
     let vehicle = new Vehicle(
-      99,
+      this.vehicle ? this.vehicle.id : 99,
       this.vehicleForm.get('name').value,
       Coordinates.fromString(this.vehicleForm.get('coordinates').value),
-      new Date().toISOString(),
+      this.vehicle ? this.vehicle.creationDate : new Date().toISOString(),
       this.vehicleForm.get('enginePower').value,
       this.vehicleForm.get('numberOfWheels').value,
       VehicleType[VehicleType[this.vehicleForm.get('vehicleType').value]],
       FuelType[FuelType[this.vehicleForm.get('fuelType').value]],
     )
-    this.dialogRef.close(vehicle);
+    this.dialogRef.close({
+      vehicle: vehicle,
+      action: this.vehicle ? 'update' : 'create'
+    });
   }
 
   async onRandomClick(): Promise<void> {
