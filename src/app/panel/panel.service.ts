@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import * as internal from 'stream';
 import { json2xml } from 'xml-js';
 import { FuelType, Vehicle, VehicleType } from '../utils';
 
@@ -24,8 +25,16 @@ export class PanelService {
 
   constructor(private http: HttpClient) { }
 
-  getVehicles(): Observable<any> {
-    return this.http.get(this.vehiclesUrl, { responseType: 'text' });
+  getVehicles(startIndex?: number, maxResults?: number): Observable<any> {
+    let url = this.vehiclesUrl;
+    if (startIndex || maxResults) {
+      url += `?`;
+      if (startIndex)
+        url += `from_index=${startIndex}&`;
+      if (maxResults)
+        url += `max_results=${maxResults}&`;
+    }
+    return this.http.get(url, { responseType: 'text' });
   }
 
   postVehicle(vehicle: Vehicle): Observable<any> {

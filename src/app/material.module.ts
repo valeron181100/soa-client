@@ -18,6 +18,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableModule} from '@angular/material/table';
+import {MatRippleModule} from '@angular/material/core';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import {MatTableModule} from '@angular/material/table';
     MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
+    MatRippleModule,
   ],
   exports: [
     MatCardModule,
@@ -61,6 +63,7 @@ import {MatTableModule} from '@angular/material/table';
     MatTabsModule,
     MatPaginatorModule,
     MatTableModule,
+    MatRippleModule,
   ]
 })
 

@@ -59,3 +59,104 @@
 .panel-buttons>* {
     margin-left: 8px !important;
 }
+
+.ripple {
+    background-position: center;
+    transition: background 0.8s;
+}
+
+.ripple:hover {
+    background: white radial-gradient(circle, transparent 0.8%, white 1%) center/15000%;
+}
+
+.ripple:active {
+    background-color: #ccc;
+    background-size: 100%;
+    transition: background 0s;
+}
+
+tr.example-detail-row {
+    height: 0 !important;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+}
+
+.example-element-row td {
+    border-bottom-width: 0 !important;
+}
+
+.example-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+.example-element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+    height: 104px;
+}
+
+.example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+}
+
+.example-element-description {
+    padding: 16px;
+}
+
+.example-element-description-attribution {
+    opacity: 0.5;
+}
+
+.example-loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.example-rate-limit-reached {
+    max-width: 360px;
+    text-align: center;
+}
+
+.vehicle-icon {
+    font-size: 70px !important;
+    height: 80px !important;
+    width: 80px !important;
+    border: solid 2px black;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.detail-row {
+    padding-left: 30px;
+    padding-bottom: 16px;
+    padding-right: 8px;
+}
+
+.detail-row-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+}

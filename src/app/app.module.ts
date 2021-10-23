@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CoordinatesPickerComponent } from './coordinates-picker/coordinates-picker.component';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import { RandomcolorModule } from 'angular-randomcolor';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    RandomcolorModule,
   ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}

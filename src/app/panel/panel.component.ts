@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatRow, MatTableModule } from '@angular/material/table';
 import { FuelType, Vehicle, VehicleType } from '../utils';
 import { PanelService } from './panel.service';
 import { json2xml, xml2json } from 'xml-js'
@@ -9,12 +9,20 @@ import { from } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { VehicleCreateComponent } from '../vehicle-create/vehicle-create.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class PanelComponent implements OnInit {
 
@@ -22,6 +30,14 @@ export class PanelComponent implements OnInit {
   vehicles: Vehicle[];
   paginatorVehicles: Vehicle[] = [];
   paginatorPageSize: number = 5;
+  paginatorLength: number = 5;
+  expandedElement: any;
+  expandedElementInfo: string;
+  isInfoLoading: boolean = true;
+
+  isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
+
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private panelService: PanelService,
@@ -30,12 +46,14 @@ export class PanelComponent implements OnInit {
               private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.loadData();
+    
   }
 
   ngAfterViewInit(): void {
-    this.paginatorVehicles = this.getPagedItems(this.paginator.pageIndex, this.paginator.pageSize);
-    this.cdr.detectChanges();
+    this.loadData()
+    this.paginator.page.subscribe(
+      () => this.loadData()
+    )
   }
 
   getPagedItems(pageIndex: number, pageSize: number): any[] {
@@ -61,31 +79,74 @@ export class PanelComponent implements OnInit {
   }
 
   loadData(): void {
-    this.panelService.getVehicles().pipe(
-      map(data => JSON.parse(xml2json(data, {compact: true, spaces: 4})).vehicles.vehicle),
-      map((list) => list.map(vehicle => {
+    let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    let maxResults = this.paginator.pageSize;
+    
+    this.panelService.getVehicles(startIndex, maxResults).pipe(
+      map(data => { 
+        let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
+        if (!Array.isArray(obj.vehicles.vehicle))
+          obj.vehicles.vehicle = [obj.vehicles.vehicle];
         return {
-          id: vehicle.id['_text'],
-          name: vehicle.name['_text'],
-          coordinates: {
-            xCoord: vehicle.coordinates.xCoord['_text'],
-            yCoord: vehicle.coordinates.yCoord['_text']
-          },
-          creationDate: vehicle.creationDate['_text'],
-          enginePower: vehicle.enginePower['_text'],
-          numberOfWheels: vehicle.numberOfWheels['_text'],
-          vehicleType: vehicle.type['_text'],
-          fuelType: vehicle.fuelType['_text'],
+          vehicles: obj.vehicles.vehicle,
+          totalCount: obj.vehicles.totalCount._text
         }
-      }))
-    ).subscribe((data: Array<Vehicle>) => {
-      this.vehicles = data;
-      this.paginatorVehicles = this.getPagedItems(this.paginator.pageIndex, this.paginator.pageSize);
+      }),
+      map((respJson) => {
+        let vehiclesList = [];
+        if (respJson.totalCount > 0)
+          vehiclesList =  respJson.vehicles.map(vehicle => {
+            return {
+              id: vehicle.id['_text'],
+              name: vehicle.name['_text'],
+              coordinates: {
+                xCoord: vehicle.coordinates.xCoord['_text'],
+                yCoord: vehicle.coordinates.yCoord['_text']
+              },
+              creationDate: vehicle.creationDate['_text'],
+              enginePower: vehicle.enginePower['_text'],
+              numberOfWheels: vehicle.numberOfWheels['_text'],
+              vehicleType: vehicle.type['_text'],
+              fuelType: vehicle.fuelType['_text'],
+            }
+          });
+        return {
+          vehicles: vehiclesList,
+          totalCount: respJson.totalCount
+        }
+      })
+    ).subscribe(data => {
+      this.vehicles = data.vehicles;
+      console.log(data);
+      this.paginatorLength = data.totalCount;
+      this.cdr.detectChanges();
     });
   }
 
   vehiclesTrackBy(index: number, item: any): any {
     return item.id;
+  }
+
+  getVehicleInfo(vehicle: Vehicle): void {
+    if (this.expandedElement === vehicle) {
+      this.isInfoLoading = true;
+      this.expandedElementInfo = undefined;
+      this.randomService.getVehicleInfo(vehicle.name).subscribe(
+        data => {
+          let infoObj = data.query.pages[Object.keys(data.query.pages)[0]].extract;
+          if (!infoObj) {
+            this.expandedElementInfo = undefined;
+            this.isInfoLoading = false;  
+          }
+          let info = infoObj.split('<!--')[0].trim();
+          if (info)
+            this.expandedElementInfo = info;
+          else
+            this.expandedElementInfo = undefined;
+          this.isInfoLoading = false;
+        }
+      )
+    }
   }
 
   openCreateVehicleDialog(): void {

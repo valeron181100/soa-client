@@ -21,10 +21,12 @@
     "@angular/platform-browser": "~10.2.0",
     "@angular/platform-browser-dynamic": "~10.2.0",
     "@angular/router": "~10.2.0",
+    "angular-randomcolor": "^1.0.3",
     "buffer": "^6.0.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "xml-js": "^1.6.11",
+    "yandex-pictures": "^1.4.88",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

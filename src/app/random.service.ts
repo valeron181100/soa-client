@@ -11,6 +11,7 @@ export class RandomService {
 
   private randomCarUrl: string = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/car_brand';
   private randomCarToken: string = '34cb2d65ccdca2cad2dd678a5fea9640bce222d1';
+  private wikiApiUrl: string = 'https://ru.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=';
 
   private httpCarHeaders: any = {
     'Content-Type': 'application/json',
@@ -55,5 +56,8 @@ export class RandomService {
     );
   }
 
+  getVehicleInfo(vehicleName: string): Observable<any> {
+    return this.http.get(this.wikiApiUrl + vehicleName);
+  }
 
 }
