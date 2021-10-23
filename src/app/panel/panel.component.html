@@ -47,19 +47,27 @@
                     <td mat-cell *matCellDef="let element"> {{element.fuelType}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="deleteColumn">
+                <ng-container matColumnDef="actionsColumn">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="onDeleteButtonClick(element)">
-                            <mat-icon class="delete-icon">delete</mat-icon>
-                        </button>
+                        <div class="actions">
+                            <button mat-icon-button (click)="onDeleteButtonClick(element)">
+                                <mat-icon class="delete-icon">delete</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="onDeleteButtonClick(element)">
+                                <mat-icon class="edit-icon">edit</mat-icon>
+                            </button>
+                        </div>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
                         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                            <mat-icon rcRandomColor [textColor]="[]" class="vehicle-icon">directions_car</mat-icon>
+                            <img *ngIf="expandedElementImgSrc else noImage" class="vehicle-img" src="{{ expandedElementImgSrc }}" alt="">
+                            <ng-template #noImage>
+                                <mat-icon rcRandomColor [textColor]="[]" class="vehicle-icon">directions_car</mat-icon>
+                            </ng-template>
                             <ng-container *ngIf="!isInfoLoading else infoSpinner">
                                 <div *ngIf="expandedElementInfo else noInfo" class="detail-row" [innerHTML]="expandedElementInfo"></div>
                             </ng-container>
@@ -76,7 +84,7 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef=" displayedColumns; sticky: true "></tr>
-                <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? (null) : element; getVehicleInfo(element);">
+                <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? (null) : element; getVehicleInfo(element); getVehicleImage(element);">
                 </tr>
                 <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
             </table>

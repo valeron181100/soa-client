@@ -19,6 +19,10 @@
     color: red;
 }
 
+.edit-icon {
+    color: blue;
+}
+
 .filters {
     width: 30%;
     padding-top: 16px;
@@ -143,6 +147,7 @@ tr.example-element-row:not(.example-expanded-row):active {
     width: 80px !important;
     border: solid 2px black;
     display: flex !important;
+    border-radius: 5px;
     align-items: center;
     justify-content: center;
     margin-bottom: 8px;
@@ -159,4 +164,15 @@ tr.example-element-row:not(.example-expanded-row):active {
     justify-content: center;
     align-items: center;
     width: 20%;
+}
+
+.vehicle-img {
+    height: 80px;
+    width: 100px;
+    border: solid 2px black;
+    border-radius: 5px;
+}
+
+.actions {
+    display: flex;
 }

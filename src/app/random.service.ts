@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, Observable, timer } from 'rxjs';
-import { switchMap, elementAt, map, debounceTime, debounce } from 'rxjs/operators';
+import { switchMap, elementAt, map, debounceTime, debounce, mergeMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { xml2json } from 'xml-js';
 import { Vehicle, VehicleType, FuelType } from './utils';
 
 @Injectable({
@@ -9,6 +11,8 @@ import { Vehicle, VehicleType, FuelType } from './utils';
 })
 export class RandomService {
 
+  private baseUrl: string = environment.baseUrl;
+  private imagesUrl: string = this.baseUrl + 'images'
   private randomCarUrl: string = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/car_brand';
   private randomCarToken: string = '34cb2d65ccdca2cad2dd678a5fea9640bce222d1';
   private wikiApiUrl: string = 'https://ru.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=';
@@ -57,7 +61,15 @@ export class RandomService {
   }
 
   getVehicleInfo(vehicleName: string): Observable<any> {
-    return this.http.get(this.wikiApiUrl + vehicleName);
+    return this.http.get(this.wikiApiUrl + vehicleName).pipe(
+      map((data: any) => data.query.pages[Object.keys(data.query.pages)[0]].extract)
+    );
+  };
+
+  getVehicleImage(vehicleName: string): Observable<any> {
+    return this.http.get(this.imagesUrl + `?q=${escape(vehicleName)}`, { responseType: 'text' }).pipe(
+      map((data: string) => data.replace('<result>', '').replace('</result>', ''))
+    );
   }
 
 }

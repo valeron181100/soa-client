@@ -26,13 +26,14 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class PanelComponent implements OnInit {
 
-  displayedColumns: string[] = ['id', 'name', 'coordinates', 'creationDate', 'enginePower', 'numberOfWheels', 'vehicleType', 'fuelType', 'deleteColumn'];
+  displayedColumns: string[] = ['id', 'name', 'coordinates', 'creationDate', 'enginePower', 'numberOfWheels', 'vehicleType', 'fuelType', 'actionsColumn'];
   vehicles: Vehicle[];
   paginatorVehicles: Vehicle[] = [];
   paginatorPageSize: number = 5;
   paginatorLength: number = 5;
   expandedElement: any;
   expandedElementInfo: string;
+  expandedElementImgSrc: string;
   isInfoLoading: boolean = true;
 
   isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
@@ -132,20 +133,29 @@ export class PanelComponent implements OnInit {
       this.isInfoLoading = true;
       this.expandedElementInfo = undefined;
       this.randomService.getVehicleInfo(vehicle.name).subscribe(
-        data => {
-          let infoObj = data.query.pages[Object.keys(data.query.pages)[0]].extract;
-          if (!infoObj) {
+        (data: string) => {
+          if (!data) {
             this.expandedElementInfo = undefined;
-            this.isInfoLoading = false;  
+            this.isInfoLoading = false;
+            return;
           }
-          let info = infoObj.split('<!--')[0].trim();
+          let info = data.split('<!--')[0].trim();
           if (info)
             this.expandedElementInfo = info;
           else
             this.expandedElementInfo = undefined;
           this.isInfoLoading = false;
         }
-      )
+      );
+    }
+  }
+
+  getVehicleImage(vehicle: Vehicle): void {
+    if (this.expandedElement === vehicle) {
+      this.expandedElementImgSrc = undefined;
+      this.randomService.getVehicleImage(vehicle.name).subscribe(
+        data => this.expandedElementImgSrc = data
+      );
     }
   }
 
