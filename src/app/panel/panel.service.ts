@@ -13,7 +13,8 @@ import { FuelType, Vehicle, VehicleType } from '../utils';
 export class PanelService {
 
   private baseUrl: string = environment.baseUrl;
-  private vehiclesUrl: string = this.baseUrl + 'vehicles'
+  private vehiclesUrl: string = this.baseUrl + 'vehicles';
+  private deleteByFuelTypeUrl: string = this.baseUrl + 'delete_by_fuel_type';
 
   httpOptions: any = {
     headers: new HttpHeaders({
@@ -60,5 +61,9 @@ export class PanelService {
 
   deleteVehicle(vehicleId: number): Observable<any> {
     return this.http.delete(this.vehiclesUrl + '/' + vehicleId);
+  }
+  
+  deleteVehicleByFuelType(fuelType: FuelType): Observable<any> {
+    return this.http.delete(this.deleteByFuelTypeUrl + `?q=${fuelType}`);
   }
 }

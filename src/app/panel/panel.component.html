@@ -93,6 +93,47 @@
         </div>
     </div>
     <div class="filters ">
-        <h1 class="section-title ">Фильтры: </h1>
+        <div class="action-card mat-elevation-z8">
+            <h3 class="section-title">Удалить все по типу топлива:</h3>
+            <div class="field-block">
+                <span class="field-title">Топливо:</span>
+                <mat-form-field class="vehicle-field">
+                    <mat-select>
+                        <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
+                            {{ type }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <button mat-raised-button class="action-button">Удалить</button>
+        </div>
+        <div class="action-card mat-elevation-z8">
+            <h3 class="section-title">Удалить все по типу топлива:</h3>
+            <div class="field-block">
+                <span class="field-title">Топливо:</span>
+                <mat-form-field class="vehicle-field">
+                    <mat-select>
+                        <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
+                            {{ type }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <button mat-raised-button class="action-button">Удалить</button>
+        </div>
+        <div class="action-card mat-elevation-z8">
+            <h3 class="section-title">Удалить все по типу топлива:</h3>
+            <div class="field-block">
+                <span class="field-title">Топливо:</span>
+                <mat-form-field class="vehicle-field">
+                    <mat-select>
+                        <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
+                            {{ type }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <button mat-raised-button class="action-button">Удалить</button>
+        </div>
     </div>
 </div>

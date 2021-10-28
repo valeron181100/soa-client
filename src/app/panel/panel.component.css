@@ -25,16 +25,40 @@
 
 .filters {
     width: 30%;
-    padding-top: 16px;
-    padding-left: 16px;
-    height: inherit;
-    background: var(--secondary-light);
-    z-index: -1;
+    padding-top: 124px;
 }
 
 .section-title {
-    font-weight: lighter;
+    font-weight: lighter !important;
     align-self: flex-start;
+}
+
+.optional-actions {
+    width: 90%;
+}
+
+.action-card {
+    width: 80%;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 48px;
+}
+
+.field-block {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.action-button {
+    margin-left: 16px !important;
+}
+
+.vehicle-field {
+    max-width: 150px;
+}
+
+.field-title {
+    margin-right: 16px;
 }
 
 .panel-table {

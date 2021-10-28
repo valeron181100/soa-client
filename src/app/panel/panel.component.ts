@@ -181,4 +181,10 @@ export class PanelComponent implements OnInit {
     });
   }
 
+  getValuesFromEnum(enumStr: string): string[] {
+    if (enumStr === 'vehicleType')
+      return (<any>Object).values(VehicleType).filter(p => !Number.isInteger(p));
+    else
+      return (<any>Object).values(FuelType).filter(p => !Number.isInteger(p));
+  }
 }
