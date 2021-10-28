@@ -19,6 +19,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableModule} from '@angular/material/table';
 import {MatRippleModule} from '@angular/material/core';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import {MatRippleModule} from '@angular/material/core';
     MatPaginatorModule,
     MatTableModule,
     MatRippleModule,
+    MatSortModule,
   ],
   exports: [
     MatCardModule,
@@ -64,6 +66,7 @@ import {MatRippleModule} from '@angular/material/core';
     MatPaginatorModule,
     MatTableModule,
     MatRippleModule,
+    MatSortModule,
   ]
 })
 

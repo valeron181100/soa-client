@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as internal from 'stream';
 import { json2xml } from 'xml-js';
-import { FuelType, Vehicle, VehicleType } from '../utils';
+import { FuelType, Vehicle, VehicleFiels, VehicleType } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -27,14 +28,21 @@ export class PanelService {
 
   constructor(private http: HttpClient) { }
 
-  getVehicles(startIndex?: number, maxResults?: number): Observable<any> {
+  getVehicles(startIndex?: number, maxResults?: number, sortState?: Sort): Observable<any> {
     let url = this.vehiclesUrl;
-    if (startIndex || maxResults) {
+    if (startIndex || maxResults || sortState) {
       url += `?`;
       if (startIndex)
         url += `from_index=${startIndex}&`;
       if (maxResults)
         url += `max_results=${maxResults}&`;
+      if (sortState) {
+        if (sortState.direction === 'asc')
+          url += `sort_by=${VehicleFiels[sortState.active]}&`
+        else if (sortState.direction === 'desc') {
+          url += `sort_by=${VehicleFiels[sortState.active]}&order_desc&`
+        }
+      }
     }
     return this.http.get(url, { responseType: 'text' });
   }

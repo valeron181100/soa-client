@@ -10,6 +10,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { VehicleCreateComponent } from '../vehicle-create/vehicle-create.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Sort } from '@angular/material/sort';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-panel',
@@ -44,6 +46,7 @@ export class PanelComponent implements OnInit {
   constructor(private panelService: PanelService,
               private randomService: RandomService,
               private dialog: MatDialog,
+              private liveAnnouncer: LiveAnnouncer,
               private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -79,11 +82,11 @@ export class PanelComponent implements OnInit {
     );
   }
 
-  loadData(): void {
+  loadData(sortState?: Sort): void {
     let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
     let maxResults = this.paginator.pageSize;
     
-    this.panelService.getVehicles(startIndex, maxResults).pipe(
+    this.panelService.getVehicles(startIndex, maxResults, sortState).pipe(
       map(data => { 
         let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
         if (!Array.isArray(obj.vehicles.vehicle))
@@ -123,6 +126,12 @@ export class PanelComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
+
+  announceSortChange(sortState: Sort) {
+    console.log(sortState);
+    this.loadData(sortState);
+  }
+
 
   vehiclesTrackBy(index: number, item: any): any {
     return item.id;

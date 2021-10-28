@@ -26,6 +26,17 @@ export class Coordinates {
     }
 }
 
+export enum VehicleFiels {
+    id = "ID",
+    name = "NAME",
+    coordinates = "COORDINATES",
+    creationDate = "CREATION_DATE",
+    enginePower = "ENGINE_POWER",
+    numberOfWheels = "NUMBER_OF_WHEELS",
+    vehicleType = "VEHICLE_TYPE",
+    fuelType = "FUEL_TYPE"
+}
+
 export enum VehicleType {
     HATCHBACK,
     SEDAN,
