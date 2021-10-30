@@ -98,14 +98,14 @@
             <div class="field-block">
                 <span class="field-title">Топливо:</span>
                 <mat-form-field class="vehicle-field">
-                    <mat-select>
+                    <mat-select [(ngModel)]="deleteAllFuel">
                         <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
                             {{ type }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
-            <button mat-raised-button class="action-button">Удалить</button>
+            <button mat-raised-button class="action-button" (click)="onDeleteByFuelTypeClick()">Удалить</button>
         </div>
         <div class="action-card mat-elevation-z8">
             <h3 class="section-title">Рассчитать среднее кол-во колес машин:</h3>

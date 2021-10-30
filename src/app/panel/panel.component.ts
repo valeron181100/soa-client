@@ -12,6 +12,7 @@ import { VehicleCreateComponent } from '../vehicle-create/vehicle-create.compone
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-panel',
@@ -38,6 +39,8 @@ export class PanelComponent implements OnInit {
   expandedElementImgSrc: string;
   isInfoLoading: boolean = true;
   avgWheelsNum: number;
+  deleteAllFuel: FuelType;
+  sortState: Sort;
 
   isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
 
@@ -47,6 +50,7 @@ export class PanelComponent implements OnInit {
   constructor(private panelService: PanelService,
               private randomService: RandomService,
               private dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private liveAnnouncer: LiveAnnouncer,
               private cdr: ChangeDetectorRef) { }
 
@@ -83,11 +87,28 @@ export class PanelComponent implements OnInit {
     );
   }
 
-  loadData(sortState?: Sort): void {
+  onDeleteByFuelTypeClick(): void {
+    if (this.deleteAllFuel)
+      this.panelService.deleteVehicleByFuelType(this.deleteAllFuel).subscribe(
+        () => {
+          this.showToast(`Удалены машины с типом топлива: ${this.deleteAllFuel}`);
+          this.loadData();
+        }
+      )
+  }
+
+  showToast(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 2000,
+      panelClass: 'custom-snack-bar'
+    });
+  }
+
+  loadData(): void {
     let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
     let maxResults = this.paginator.pageSize;
     
-    this.panelService.getVehicles(startIndex, maxResults, sortState).pipe(
+    this.panelService.getVehicles(startIndex, maxResults, this.sortState).pipe(
       map(data => { 
         let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
         if (!Array.isArray(obj.vehicles.vehicle))
@@ -130,7 +151,8 @@ export class PanelComponent implements OnInit {
 
   announceSortChange(sortState: Sort): void {
     console.log(sortState);
-    this.loadData(sortState);
+    this.sortState = sortState;
+    this.loadData();
   }
 
   countAvgWheelsNum(): void {
