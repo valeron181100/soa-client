@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as internal from 'stream';
-import { json2xml } from 'xml-js';
+import { json2xml, xml2json } from 'xml-js';
 import { FuelType, Vehicle, VehicleFiels, VehicleType } from '../utils';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class PanelService {
   private baseUrl: string = environment.baseUrl;
   private vehiclesUrl: string = this.baseUrl + 'vehicles';
   private deleteByFuelTypeUrl: string = this.baseUrl + 'delete_by_fuel_type';
+  private wheelsAvgUrl: string = this.baseUrl + 'wheels_avg_count';
 
   httpOptions: any = {
     headers: new HttpHeaders({
@@ -73,5 +74,11 @@ export class PanelService {
   
   deleteVehicleByFuelType(fuelType: FuelType): Observable<any> {
     return this.http.delete(this.deleteByFuelTypeUrl + `?q=${fuelType}`);
+  }
+  
+  getAvgNumberOfWheels(): Observable<any> {
+    return this.http.get(this.wheelsAvgUrl, { responseType: 'text' }).pipe(
+      map(data => JSON.parse(xml2json(data, {compact: true, spaces: 4})).avg._text)
+    );
   }
 }

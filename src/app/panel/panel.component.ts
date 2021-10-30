@@ -37,6 +37,7 @@ export class PanelComponent implements OnInit {
   expandedElementInfo: string;
   expandedElementImgSrc: string;
   isInfoLoading: boolean = true;
+  avgWheelsNum: number;
 
   isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
 
@@ -127,11 +128,19 @@ export class PanelComponent implements OnInit {
     });
   }
 
-  announceSortChange(sortState: Sort) {
+  announceSortChange(sortState: Sort): void {
     console.log(sortState);
     this.loadData(sortState);
   }
 
+  countAvgWheelsNum(): void {
+    this.panelService.getAvgNumberOfWheels().subscribe(
+      data => {
+        this.avgWheelsNum = data;
+        this.cdr.markForCheck();
+      }
+    );
+  }
 
   vehiclesTrackBy(index: number, item: any): any {
     return item.id;
