@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>Настроить фильтры</h1>
+<div mat-dialog-content class="vehicle-create-container" [formGroup]="filtersForm">
+    <div class="field-block">
+        <span class="field-title">Id:</span>
+        <mat-form-field class="vehicle-field">
+            <input matInput placeholder="Введите id" formControlName="id" autocomplete="off">
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Название:</span>
+        <mat-form-field class="vehicle-field">
+            <input matInput placeholder="Введите название" formControlName="name" autocomplete="off">
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Координаты:</span>
+        <mat-form-field class="vehicle-field">
+            <input matInput placeholder="Введите координаты: (x, y)" formControlName="coordinates" autocomplete="off">
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Мощность:</span>
+        <mat-form-field class="vehicle-field">
+            <input matInput type="number" min="0" placeholder="Введите мощность" formControlName="enginePower" autocomplete="off">
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Кол-во колес:</span>
+        <mat-form-field class="vehicle-field">
+            <input matInput placeholder="Введите число" type="number" min="0" formControlName="numberOfWheels" autocomplete="off">
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Тип машины:</span>
+        <mat-form-field class="vehicle-field">
+            <mat-select formControlName="vehicleType">
+                <mat-option *ngFor="let type of getValuesFromEnum('vehicleType')" [value]="type">
+                    {{ type }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="field-block">
+        <span class="field-title">Топливо:</span>
+        <mat-form-field class="vehicle-field">
+            <mat-select formControlName="fuelType">
+                <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
+                    {{ type }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button [disabled]="filtersForm.invalid" (click)="onReadyButtonClick()">Применить</button>
+    <button mat-raised-button [mat-dialog-close] cdkFocusInitial>Отмена</button>
+</div>

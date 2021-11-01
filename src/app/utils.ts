@@ -12,6 +12,17 @@ export class Vehicle {
                 ) { }
 }
 
+export class Car {
+  id: number;
+  name: string;
+  coordinates: Coordinates;
+  creationDate: string;
+  enginePower: number;
+  numberOfWheels: number;
+  vehicleType: VehicleType;
+  fuelType: FuelType
+}
+
 export class Coordinates {
     constructor(public xCoord: number,
                 public yCoord: number) { }
@@ -64,10 +75,18 @@ export function vehicleTypeValidator(): ValidatorFn {
     }
   }
   
-  export function fuelTypeValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value)
-        return null;
-      return (<any>Object).values(FuelType).includes(control.value) ? null : { invalidVehicleType: { value: control.value } };
-    }
+export function fuelTypeValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value)
+      return null;
+    return (<any>Object).values(FuelType).includes(control.value) ? null : { invalidVehicleType: { value: control.value } };
   }
+}
+
+export function coordinatesInputValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value)
+      return null;
+    return /\((\d+(\.\d+)?),\s*(\d+(\.\d+)?)\)/.test(control.value) ? null : { invalidCoordinatesInput: { value: control.value } };
+  }
+}

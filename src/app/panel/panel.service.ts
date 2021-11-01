@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as internal from 'stream';
 import { json2xml, xml2json } from 'xml-js';
-import { FuelType, Vehicle, VehicleFiels, VehicleType } from '../utils';
+import { Car, Coordinates, FuelType, Vehicle, VehicleFiels, VehicleType } from '../utils';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,7 @@ export class PanelService {
 
   constructor(private http: HttpClient) { }
 
-  getVehicles(startIndex?: number, maxResults?: number, sortState?: Sort): Observable<any> {
+  getVehicles(startIndex?: number, maxResults?: number, sortState?: Sort, filters?: Car): Observable<any> {
     let url = this.vehiclesUrl;
     if (startIndex || maxResults || sortState) {
       url += `?`;
@@ -43,6 +43,16 @@ export class PanelService {
         else if (sortState.direction === 'desc') {
           url += `sort_by=${VehicleFiels[sortState.active]}&order_desc&`
         }
+      }
+      if (filters) {
+        let coords;
+        if (filters.coordinates)
+          coords = Coordinates.toString(filters.coordinates);
+        let filterFake = {
+          ...filters,
+          coordinates: coords
+        };
+        url += `filters=${encodeURIComponent( JSON.stringify(filterFake))}`
       }
     }
     return this.http.get(url, { responseType: 'text' });

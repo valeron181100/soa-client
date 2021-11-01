@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatRow, MatTableModule } from '@angular/material/table';
-import { FuelType, Vehicle, VehicleType } from '../utils';
+import { Car, Coordinates, FuelType, Vehicle, VehicleType } from '../utils';
 import { PanelService } from './panel.service';
 import { json2xml, xml2json } from 'xml-js'
 import { elementAt, map, switchMap } from 'rxjs/operators'
@@ -13,6 +13,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FiltersComponent } from '../filters/filters.component';
 
 @Component({
   selector: 'app-panel',
@@ -41,6 +42,7 @@ export class PanelComponent implements OnInit {
   avgWheelsNum: number;
   deleteAllFuel: FuelType;
   sortState: Sort;
+  filtersObj: Car;
 
   isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
 
@@ -55,7 +57,7 @@ export class PanelComponent implements OnInit {
               private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    
+    this.filtersObj = new Car();
   }
 
   ngAfterViewInit(): void {
@@ -63,6 +65,11 @@ export class PanelComponent implements OnInit {
     this.paginator.page.subscribe(
       () => this.loadData()
     )
+  }
+
+  clearFilters(): void {
+    this.filtersObj = undefined;
+    this.loadData();
   }
 
   getPagedItems(pageIndex: number, pageSize: number): any[] {
@@ -108,7 +115,7 @@ export class PanelComponent implements OnInit {
     let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
     let maxResults = this.paginator.pageSize;
     
-    this.panelService.getVehicles(startIndex, maxResults, this.sortState).pipe(
+    this.panelService.getVehicles(startIndex, maxResults, this.sortState, this.filtersObj).pipe(
       map(data => { 
         let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
         if (!Array.isArray(obj.vehicles.vehicle))
@@ -197,6 +204,20 @@ export class PanelComponent implements OnInit {
         data => this.expandedElementImgSrc = data
       );
     }
+  }
+
+  openFiltersDialog(): void {
+    const dialogRef = this.dialog.open(FiltersComponent, {
+      width: '500px'
+    });
+
+    dialogRef.componentInstance.filtersObj = this.filtersObj;
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(result);
+      this.filtersObj = result;
+      this.loadData();
+    });
   }
 
   openCreateVehicleDialog(vehicle?: Vehicle): void {

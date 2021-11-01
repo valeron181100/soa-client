@@ -4,6 +4,8 @@
         <div class="panel-buttons">
             <button mat-raised-button color="red" (click)="openCreateVehicleDialog()">Создать</button>
             <button mat-raised-button color="red" (click)="onAddRandomCarClick()">Добавить случайный</button>
+            <button mat-raised-button color="red" (click)="openFiltersDialog()">Фильтры</button>
+            <button mat-raised-button color="red" (click)="clearFilters()">Очистить фильтры</button>
         </div>
         <div class="panel-table-container mat-elevation-z8">
             <table mat-table multiTemplateDataRows [dataSource]="vehicles" [trackBy]="vehiclesTrackBy" matSort (matSortChange)="announceSortChange($event)" class="panel-table">

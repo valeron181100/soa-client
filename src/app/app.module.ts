@@ -13,13 +13,15 @@ import { CoordinatesPickerComponent } from './coordinates-picker/coordinates-pic
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { RandomcolorModule } from 'angular-randomcolor';
+import { FiltersComponent } from './filters/filters.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PanelComponent,
     VehicleCreateComponent,
-    CoordinatesPickerComponent
+    CoordinatesPickerComponent,
+    FiltersComponent
   ],
   imports: [
     BrowserModule,
