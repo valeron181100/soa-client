@@ -17,6 +17,7 @@ export class PanelService {
   private vehiclesUrl: string = this.baseUrl + 'vehicles';
   private deleteByFuelTypeUrl: string = this.baseUrl + 'delete_by_fuel_type';
   private wheelsAvgUrl: string = this.baseUrl + 'wheels_avg_count';
+  private searchNameUrl: string = this.baseUrl + 'search_by_name';
 
   httpOptions: any = {
     headers: new HttpHeaders({
@@ -55,7 +56,40 @@ export class PanelService {
         url += `filters=${encodeURIComponent( JSON.stringify(filterFake))}`
       }
     }
-    return this.http.get(url, { responseType: 'text' });
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      map(data => { 
+        let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
+        if (!Array.isArray(obj.vehicles.vehicle))
+          obj.vehicles.vehicle = [obj.vehicles.vehicle];
+        return {
+          vehicles: obj.vehicles.vehicle,
+          totalCount: obj.vehicles.totalCount._text
+        }
+      }),
+      map((respJson) => {
+        let vehiclesList = [];
+        if (respJson.totalCount > 0)
+          vehiclesList =  respJson.vehicles.map(vehicle => {
+            return {
+              id: vehicle.id['_text'],
+              name: vehicle.name['_text'],
+              coordinates: {
+                xCoord: vehicle.coordinates.xCoord['_text'],
+                yCoord: vehicle.coordinates.yCoord['_text']
+              },
+              creationDate: vehicle.creationDate['_text'],
+              enginePower: vehicle.enginePower['_text'],
+              numberOfWheels: vehicle.numberOfWheels['_text'],
+              vehicleType: vehicle.type['_text'],
+              fuelType: vehicle.fuelType['_text'],
+            }
+          });
+        return {
+          vehicles: vehiclesList,
+          totalCount: respJson.totalCount
+        }
+      })
+    );
   }
 
   buildBodyXml(vehicle: Vehicle): string {
@@ -89,6 +123,58 @@ export class PanelService {
   getAvgNumberOfWheels(): Observable<any> {
     return this.http.get(this.wheelsAvgUrl, { responseType: 'text' }).pipe(
       map(data => JSON.parse(xml2json(data, {compact: true, spaces: 4})).avg._text)
+    );
+  }
+
+  searchVehiclesWithName(name: string, startIndex?: number, maxResults?: number, sortState?: Sort): Observable<any> {
+    let url = this.searchNameUrl;
+    if (startIndex || maxResults || sortState) {
+      url += `?q=${name}&`;
+      if (startIndex)
+        url += `from_index=${startIndex}&`;
+      if (maxResults)
+        url += `max_results=${maxResults}&`;
+      if (sortState) {
+        if (sortState.direction === 'asc')
+          url += `sort_by=${VehicleFiels[sortState.active]}&`
+        else if (sortState.direction === 'desc') {
+          url += `sort_by=${VehicleFiels[sortState.active]}&order_desc&`
+        }
+      }
+    }
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      map(data => { 
+        let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
+        if (!Array.isArray(obj.vehicles.vehicle))
+          obj.vehicles.vehicle = [obj.vehicles.vehicle];
+        return {
+          vehicles: obj.vehicles.vehicle,
+          totalCount: obj.vehicles.totalCount._text
+        }
+      }),
+      map((respJson) => {
+        let vehiclesList = [];
+        if (respJson.totalCount > 0)
+          vehiclesList =  respJson.vehicles.map(vehicle => {
+            return {
+              id: vehicle.id['_text'],
+              name: vehicle.name['_text'],
+              coordinates: {
+                xCoord: vehicle.coordinates.xCoord['_text'],
+                yCoord: vehicle.coordinates.yCoord['_text']
+              },
+              creationDate: vehicle.creationDate['_text'],
+              enginePower: vehicle.enginePower['_text'],
+              numberOfWheels: vehicle.numberOfWheels['_text'],
+              vehicleType: vehicle.type['_text'],
+              fuelType: vehicle.fuelType['_text'],
+            }
+          });
+        return {
+          vehicles: vehiclesList,
+          totalCount: respJson.totalCount
+        }
+      })
     );
   }
 }

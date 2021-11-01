@@ -122,18 +122,16 @@
             <button mat-raised-button class="action-button" (click)="countAvgWheelsNum()">Рассчитать</button>
         </div>
         <div class="action-card mat-elevation-z8">
-            <h3 class="section-title">Удалить все по типу топлива:</h3>
+            <h3 class="section-title">Найти по имени:</h3>
             <div class="field-block">
-                <span class="field-title">Топливо:</span>
+                <span class="field-title">Имя:</span>
                 <mat-form-field class="vehicle-field">
-                    <mat-select>
-                        <mat-option *ngFor="let type of getValuesFromEnum('fuelType')" [value]="type">
-                            {{ type }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <input matInput type="text" [(ngModel)]="nameSearchInput" /> </mat-form-field>
             </div>
-            <button mat-raised-button class="action-button">Удалить</button>
+            <div class="search-name-btns">
+                <button mat-raised-button class="action-button" (click)="searchByName(nameSearchInput)">Найти</button>
+                <button *ngIf="isNameSearching" mat-raised-button class="action-button" (click)="clearSearchByName()">Очистить</button>
+            </div>
         </div>
     </div>
 </div>

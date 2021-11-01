@@ -42,6 +42,8 @@ export class PanelComponent implements OnInit {
   avgWheelsNum: number;
   deleteAllFuel: FuelType;
   sortState: Sort;
+  isNameSearching: boolean = false;
+  nameSearchInput: string;
   filtersObj: Car;
 
   isExpansionDetailRow = (row: any) => row.hasOwnProperty('detailRow');
@@ -63,7 +65,12 @@ export class PanelComponent implements OnInit {
   ngAfterViewInit(): void {
     this.loadData()
     this.paginator.page.subscribe(
-      () => this.loadData()
+      () => {
+        if (this.isNameSearching)
+          this.searchByName(this.nameSearchInput);
+        else
+          this.loadData();
+      }
     )
   }
 
@@ -90,7 +97,12 @@ export class PanelComponent implements OnInit {
 
   onDeleteButtonClick(element: Vehicle) {
     this.panelService.deleteVehicle(element.id).subscribe(
-      () => this.loadData()
+      () => {
+        if (this.isNameSearching)
+          this.searchByName(this.nameSearchInput);
+        else
+          this.loadData();
+      }
     );
   }
 
@@ -115,45 +127,33 @@ export class PanelComponent implements OnInit {
     let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
     let maxResults = this.paginator.pageSize;
     
-    this.panelService.getVehicles(startIndex, maxResults, this.sortState, this.filtersObj).pipe(
-      map(data => { 
-        let obj = JSON.parse(xml2json(data, {compact: true, spaces: 4}));
-        if (!Array.isArray(obj.vehicles.vehicle))
-          obj.vehicles.vehicle = [obj.vehicles.vehicle];
-        return {
-          vehicles: obj.vehicles.vehicle,
-          totalCount: obj.vehicles.totalCount._text
-        }
-      }),
-      map((respJson) => {
-        let vehiclesList = [];
-        if (respJson.totalCount > 0)
-          vehiclesList =  respJson.vehicles.map(vehicle => {
-            return {
-              id: vehicle.id['_text'],
-              name: vehicle.name['_text'],
-              coordinates: {
-                xCoord: vehicle.coordinates.xCoord['_text'],
-                yCoord: vehicle.coordinates.yCoord['_text']
-              },
-              creationDate: vehicle.creationDate['_text'],
-              enginePower: vehicle.enginePower['_text'],
-              numberOfWheels: vehicle.numberOfWheels['_text'],
-              vehicleType: vehicle.type['_text'],
-              fuelType: vehicle.fuelType['_text'],
-            }
-          });
-        return {
-          vehicles: vehiclesList,
-          totalCount: respJson.totalCount
-        }
-      })
-    ).subscribe(data => {
+    this.panelService.getVehicles(startIndex, maxResults, this.sortState, this.filtersObj).subscribe(data => {
       this.vehicles = data.vehicles;
       console.log(data);
       this.paginatorLength = data.totalCount;
       this.cdr.detectChanges();
     });
+  }
+
+  searchByName(nameInput: string): void {
+    if (!nameInput)
+      return;
+    let startIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    let maxResults = this.paginator.pageSize;
+    
+    this.panelService.searchVehiclesWithName(nameInput, startIndex, maxResults, this.sortState).subscribe(data => {
+      this.vehicles = data.vehicles;
+      console.log(data);
+      this.paginatorLength = this.vehicles.length;
+      this.isNameSearching = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  clearSearchByName(): void {
+    this.isNameSearching = false;
+    this.nameSearchInput = '';
+    this.loadData();
   }
 
   announceSortChange(sortState: Sort): void {

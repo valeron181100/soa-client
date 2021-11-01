@@ -200,3 +200,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 .actions {
     display: flex;
 }
+
+.search-name-btns {
+    display: flex;
+}
