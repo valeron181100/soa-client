@@ -91,7 +91,8 @@ export class PanelComponent implements OnInit {
   async onAddRandomCarClick(): Promise<void> {
     let vehicle = await this.randomService.getRandomVehicle().toPromise();
     this.panelService.postVehicle(vehicle).subscribe(
-      () => this.loadData()
+      () => this.loadData(),
+      err => this.showToast(err.statusText)
     );
   }
 
@@ -102,7 +103,8 @@ export class PanelComponent implements OnInit {
           this.searchByName(this.nameSearchInput);
         else
           this.loadData();
-      }
+      },
+      err => this.showToast(err.statusText)
     );
   }
 
@@ -112,7 +114,8 @@ export class PanelComponent implements OnInit {
         () => {
           this.showToast(`Удалены машины с типом топлива: ${this.deleteAllFuel}`);
           this.loadData();
-        }
+        },
+        err => this.showToast(err.statusText)
       )
   }
 
@@ -132,7 +135,8 @@ export class PanelComponent implements OnInit {
       console.log(data);
       this.paginatorLength = data.totalCount;
       this.cdr.detectChanges();
-    });
+    },
+    err => {console.log(err); this.showToast(err.statusText)});
   }
 
   searchByName(nameInput: string): void {
@@ -147,7 +151,8 @@ export class PanelComponent implements OnInit {
       this.paginatorLength = this.vehicles.length;
       this.isNameSearching = true;
       this.cdr.detectChanges();
-    });
+    },
+    err => this.showToast(err.statusText));
   }
 
   clearSearchByName(): void {
@@ -167,7 +172,8 @@ export class PanelComponent implements OnInit {
       data => {
         this.avgWheelsNum = data;
         this.cdr.markForCheck();
-      }
+      },
+      err => this.showToast(err.statusText)
     );
   }
 
@@ -192,7 +198,8 @@ export class PanelComponent implements OnInit {
           else
             this.expandedElementInfo = undefined;
           this.isInfoLoading = false;
-        }
+        },
+        err => this.showToast(err.statusText)
       );
     }
   }
@@ -201,7 +208,8 @@ export class PanelComponent implements OnInit {
     if (this.expandedElement === vehicle) {
       this.expandedElementImgSrc = undefined;
       this.randomService.getVehicleImage(vehicle.name).subscribe(
-        data => this.expandedElementImgSrc = data
+        data => this.expandedElementImgSrc = data,
+        err => this.showToast(err.statusText)
       );
     }
   }
@@ -233,11 +241,13 @@ export class PanelComponent implements OnInit {
       if (result)
         if (result.action === 'create')
           this.panelService.postVehicle(result.vehicle).subscribe(
-            () => this.loadData()
+            () => this.loadData(),
+            err => this.showToast(err.statusText)
           );
         else
           this.panelService.updateVehicle(result.vehicle).subscribe(
-            () => this.loadData()
+            () => this.loadData(),
+            err => this.showToast(err.statusText)
           ); 
     });
   }

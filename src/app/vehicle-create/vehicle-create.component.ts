@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn,
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CoordinatesPickerComponent } from '../coordinates-picker/coordinates-picker.component';
 import { RandomService } from '../random.service';
-import { Coordinates, FuelType, fuelTypeValidator, Vehicle, VehicleType, vehicleTypeValidator } from '../utils';
+import { Coordinates, coordinatesInputValidator, FuelType, fuelTypeValidator, Vehicle, VehicleType, vehicleTypeValidator } from '../utils';
 
 @Component({
   selector: 'app-vehicle-create',
@@ -25,7 +25,7 @@ export class VehicleCreateComponent implements OnInit {
   ngOnInit(): void {
     this.vehicleForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
-      coordinates: new FormControl('', [Validators.required]),
+      coordinates: new FormControl('', [Validators.required, coordinatesInputValidator()]),
       enginePower: new FormControl('1', [Validators.required, Validators.min(0)]),
       numberOfWheels: new FormControl('1', [Validators.required, Validators.min(0)]),
       vehicleType: new FormControl('', [vehicleTypeValidator()]),

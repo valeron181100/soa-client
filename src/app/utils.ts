@@ -87,6 +87,6 @@ export function coordinatesInputValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (!control.value)
       return null;
-    return /\((\d+(\.\d+)?),\s*(\d+(\.\d+)?)\)/.test(control.value) ? null : { invalidCoordinatesInput: { value: control.value } };
+    return /\(-?(\d+(\.\d+)?),\s(-?\d+(\.\d+)?)\)/.test(control.value) ? null : { invalidCoordinatesInput: { value: control.value } };
   }
 }

@@ -62,13 +62,14 @@ export class PanelService {
         if (!Array.isArray(obj.vehicles.vehicle))
           obj.vehicles.vehicle = [obj.vehicles.vehicle];
         return {
-          vehicles: obj.vehicles.vehicle,
+          vehicles: obj.vehicles.vehicle.filter(p => !!p),
           totalCount: obj.vehicles.totalCount._text
         }
       }),
       map((respJson) => {
         let vehiclesList = [];
-        if (respJson.totalCount > 0)
+        console.log(respJson.vehicles )
+        if (respJson.totalCount > 0 && respJson.vehicles.length > 0)
           vehiclesList =  respJson.vehicles.map(vehicle => {
             return {
               id: vehicle.id['_text'],
